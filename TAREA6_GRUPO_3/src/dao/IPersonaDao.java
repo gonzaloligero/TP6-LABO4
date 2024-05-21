@@ -8,5 +8,6 @@ public interface IPersonaDao {
 
 	public boolean insert(Persona persona);
 	public boolean delete(Persona persona_a_eliminar);
+	public boolean update(Persona persona_a_modificar);
 	public List<Persona> readALL();
 }
