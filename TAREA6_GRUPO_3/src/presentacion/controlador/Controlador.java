@@ -4,9 +4,9 @@ package presentacion.controlador;
 	import java.awt.event.ActionListener;
 	import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
 
-
-	import negocio.PersonaNegocio;
+import negocio.PersonaNegocio;
 	import presentacion.vista.PanelAgregar;
     import presentacion.vista.PanelEliminar;
 	import presentacion.vista.PanelListar;
@@ -45,24 +45,46 @@ package presentacion.controlador;
 			String apellido = this.pnlAgregar.getTxtApellido().getText();
 			String dni = this.pnlAgregar.getTxtDni().getText();
 			
-			Persona nuevaPersona = new Persona(dni,nombre,apellido);
+			 if (!esNombreValido(nombre) || !esNombreValido(apellido)) {
+		            JOptionPane.showMessageDialog(null, "Nombre y apellido no deben contener números ni estar vacíos");
+		            return;
+		        }
+
+		        if (!esDniValido(dni)) {
+		            JOptionPane.showMessageDialog(null, "DNI debe contener solo números y no debe estar vacío");
+		            return;
+		        }
 			
-			boolean estado = pNeg.insert(nuevaPersona);
+		        
+		        Persona nuevaPersona = new Persona(dni,nombre,apellido);
+			    boolean estado = pNeg.insert(nuevaPersona);
 			
 			String mensaje;
 			if(estado==true)
 			{
 				mensaje="Persona agregada con exito";
-				System.out.println("se agrego a la base de datos");
+				System.out.println("Se agregó a la base de datos");
 				this.pnlAgregar.getTxtNombre().setText("");	
 				this.pnlAgregar.getTxtApellido().setText("");
 				this.pnlAgregar.getTxtDni().setText("");
 			}
-			else
-				/*mensaje="Persona no agregada, complete todos los campos";*/
-			    System.out.println("no se agrego a la base de datos");
-		}
-	           
+			else {
+				mensaje="Persona no agregada, complete todos los campos";
+			    System.out.println("No se agregó a la base de datos");
+	    }
+			JOptionPane pnConfirmacion = null;
+			pnConfirmacion.showMessageDialog(null,"Persona agregada exitosamente!");
+	
+	}    
+
+      private boolean esNombreValido(String texto) {
+         return texto.matches("[a-zA-Z]+");
+      }
+
+      private boolean esDniValido(String texto) {
+        return texto.matches("\\d+");
+      }
+	
 	    public void inicializar() {
 	        
 	    	this.ventanaPrincipal.setVisible(true);
