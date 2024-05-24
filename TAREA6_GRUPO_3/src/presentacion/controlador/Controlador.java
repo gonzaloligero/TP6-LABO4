@@ -3,6 +3,7 @@ package presentacion.controlador;
 	import java.awt.event.ActionEvent;
 	import java.awt.event.ActionListener;
 	import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -18,6 +19,11 @@ import negocio.PersonaNegocio;
 			
 	    private VentanaPrincipal ventanaPrincipal;
 	    private PanelAgregar pnlAgregar;
+	    private PanelListar pnListar;
+	    
+	    
+
+		private ArrayList<Persona> personasEnTabla;
 	    private PersonaNegocio pNeg;	   
 	    
 	    public Controlador(VentanaPrincipal vista, PersonaNegocio pNeg) {
@@ -25,8 +31,12 @@ import negocio.PersonaNegocio;
 	        this.ventanaPrincipal = vista;
 	        this.pNeg = pNeg;
 	        
-	        this.pnlAgregar = new PanelAgregar();        
+	        this.pnlAgregar = new PanelAgregar();  
+	        this.pnListar = new PanelListar();
+	        
 	        this.ventanaPrincipal.getMenuAgregar().addActionListener(a->EventoClickMenu_AbrirPanel_AgregarPersona(a));
+	        this.ventanaPrincipal.getMenuListar().addActionListener(a->EventoClickMenu_AbrirPanel_ListarPersonas(a));
+	        
 	        this.pnlAgregar.getBtnAgregar().addActionListener(a->PanelAgregarPersonas(a));
 	                
 	    }
@@ -39,7 +49,20 @@ import negocio.PersonaNegocio;
 			ventanaPrincipal.getContentPane().revalidate();
 		}
 	    
-	    private void PanelAgregarPersonas(ActionEvent a) {
+	    
+	    public void  EventoClickMenu_AbrirPanel_ListarPersonas(ActionEvent a)
+	    {		
+	    	ventanaPrincipal.getContentPane().removeAll();
+	    	ventanaPrincipal.getContentPane().add(pnListar);
+	    	ventanaPrincipal.getContentPane().repaint();
+	    	ventanaPrincipal.getContentPane().revalidate();
+	    	refrescarTabla();
+	    }
+	    
+	    
+	    
+	    
+	   private void PanelAgregarPersonas(ActionEvent a) {
 			
 			String nombre = this.pnlAgregar.getTxtNombre().getText();	
 			String apellido = this.pnlAgregar.getTxtApellido().getText();
@@ -77,23 +100,32 @@ import negocio.PersonaNegocio;
 	
 	}    
 
-      private boolean esNombreValido(String texto) {
+       private boolean esNombreValido(String texto) {
          return texto.matches("[a-zA-Z]+");
-      }
+       }
 
-      private boolean esDniValido(String texto) {
+       private boolean esDniValido(String texto) {
         return texto.matches("\\d+");
-      }
+       }
 	
-	    public void inicializar() {
+	   public void inicializar() {
 	        
 	    	this.ventanaPrincipal.setVisible(true);
-	    }
+	   }
 
+	   
+		private void refrescarTabla()
+		{
+			this.personasEnTabla = (ArrayList<Persona>) pNeg.readALL();
+			this.pnListar.llenarTabla(this.personasEnTabla);
+		}
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
+	   public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub		
 		}
+		
+		
+
 	
 }

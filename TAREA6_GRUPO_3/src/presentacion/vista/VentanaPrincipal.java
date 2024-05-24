@@ -56,6 +56,17 @@ public class VentanaPrincipal extends JFrame {
 		this.mntmAgregar = menuAgregar;
 	}
 	
+	
+	
+    public JMenuItem getMenuListar() {
+		return mntmListar;
+	}
+
+	public void setMenuListar(JMenuItem menuListar) {
+		this.mntmListar = menuListar;
+	}
+	
+	
 	private void initialize() 
 	{
 		 menuBar = new JMenuBar();
@@ -81,6 +92,3 @@ public class VentanaPrincipal extends JFrame {
 	}
 
 }
-
-
-
