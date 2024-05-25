@@ -28,6 +28,7 @@ import presentacion.vista.PanelAgregar;
 
 		private ArrayList<Persona> personasEnTabla;
 		private ArrayList<Persona> personasEnLista;
+		private ArrayList<Persona> listaPersonas;
 		
 	    private PersonaNegocio pNeg;	   
 	    
@@ -91,25 +92,33 @@ import presentacion.vista.PanelAgregar;
 		            JOptionPane.showMessageDialog(null, "DNI debe contener solo números y no debe estar vacío");
 		            return;
 		     }
+		     
+		     if(!validarDni(dni)) {
+		    	 
+		    	 Persona nuevaPersona = new Persona(dni,nombre,apellido);
+		    	 boolean estado = pNeg.insert(nuevaPersona);
+		    	 
+		    	 String mensaje;
+		    	 if(estado==true)
+		    	 {
+		    		 mensaje="Persona agregada con exito";
+		    		 System.out.println("Se agregó a la base de datos");
+		    		 this.pnlAgregar.getTxtNombre().setText("");	
+		    		 this.pnlAgregar.getTxtApellido().setText("");
+		    		 this.pnlAgregar.getTxtDni().setText("");
+		    	 }
+		    	 else {
+		    		 mensaje="Persona no agregada, complete todos los campos";
+		    		 //System.out.println("No se agregó a la base de datos");
+		    	 }
+		    	 JOptionPane pnConfirmacion = null;
+		    	 pnConfirmacion.showMessageDialog(null,"Persona agregada exitosamente!");
+		     }
+		     else {
+		    	 JOptionPane.showMessageDialog(null, "El dni "+dni+" ya existe");
+		    	 this.pnlAgregar.getTxtDni().setText("");
+		     }
 		        
-		     Persona nuevaPersona = new Persona(dni,nombre,apellido);
-			 boolean estado = pNeg.insert(nuevaPersona);
-			
-			 String mensaje;
-			 if(estado==true)
-			 {
-				mensaje="Persona agregada con exito";
-				System.out.println("Se agregó a la base de datos");
-				this.pnlAgregar.getTxtNombre().setText("");	
-				this.pnlAgregar.getTxtApellido().setText("");
-				this.pnlAgregar.getTxtDni().setText("");
-			 }
-			 else {
-				mensaje="Persona no agregada, complete todos los campos";
-			    System.out.println("No se agregó a la base de datos");
-	         }
-			 JOptionPane pnConfirmacion = null;
-			 pnConfirmacion.showMessageDialog(null,"Persona agregada exitosamente!");
 	   }  
 	   
 	   
@@ -154,6 +163,18 @@ import presentacion.vista.PanelAgregar;
 		{
 			this.personasEnTabla = (ArrayList<Persona>) pNeg.readALL();
 			this.pnListar.llenarTabla(this.personasEnTabla);
+		}
+		
+		
+		private boolean validarDni(String dni) {
+			listaPersonas = (ArrayList<Persona>) pNeg.readALL();
+			for (Persona persona : listaPersonas) {
+				
+				if(persona.getDni().equals(dni)) {
+					return true;
+				}
+			}
+			return false;
 		}
 			
 		
