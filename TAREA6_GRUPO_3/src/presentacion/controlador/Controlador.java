@@ -27,6 +27,8 @@ import presentacion.vista.PanelAgregar;
 	    
 
 		private ArrayList<Persona> personasEnTabla;
+		private ArrayList<Persona> personasEnLista;
+		
 	    private PersonaNegocio pNeg;	   
 	    
 	    public Controlador(VentanaPrincipal vista, PersonaNegocio pNeg) {
@@ -37,30 +39,29 @@ import presentacion.vista.PanelAgregar;
 	        this.pnlAgregar = new PanelAgregar();  
 	        this.pnListar = new PanelListar();
 	        this.pnlModificar = new PanelModificar();
+	        this.pnlEliminar = new PanelEliminar();
 	        this.ventanaPrincipal.getMenuAgregar().addActionListener(a->EventoClickMenu_AbrirPanel_AgregarPersona(a));
 	        this.ventanaPrincipal.getMenuListar().addActionListener(a->EventoClickMenu_AbrirPanel_ListarPersonas(a));
 	        this.ventanaPrincipal.getMntmModificar().addActionListener(a->EventoClickMenu_AbrirModificar_ModificarPersona(a));
 	        this.ventanaPrincipal.getMntmEliminar().addActionListener(a->EventoClickMenu_AbrirEliminar_EliminarPersona(a));
 	        this.pnlAgregar.getBtnAgregar().addActionListener(a->PanelAgregarPersonas(a));
 	        this.pnlModificar.getBtnModificar().addActionListener(a->ventanaModificarPersona(a));
-	        
-	        
-	      
-	        
-	                
+	        this.pnlEliminar.getBtnEliminar().addActionListener(a->PanelEliminar(a));
+	        	        	                         
 	    }
 	    
-	    public void EventoClickMenu_AbrirModificar_ModificarPersona(ActionEvent a) {
+	    public void EventoClickMenu_AbrirModificar_ModificarPersona(ActionEvent a)
+	    {
 	    	actualizarListaPersonasModificar();
-	    	this.ventanaPrincipal.setPanel(pnlModificar);
-	    	
+	    	this.ventanaPrincipal.setPanel(pnlModificar);    	
 	    }
 	    
-	    public void  EventoClickMenu_AbrirEliminar_EliminarPersona(ActionEvent a){
-	    
-	    	this.ventanaPrincipal.setPanel(pnlEliminar);
-    	
-    }
+	    public void  EventoClickMenu_AbrirEliminar_EliminarPersona(ActionEvent a)
+	    {
+	    	actualizarListaPersonasEliminar();
+	    	this.ventanaPrincipal.setPanel(pnlEliminar);   	
+        
+	    }
 	    public void  EventoClickMenu_AbrirPanel_AgregarPersona(ActionEvent a)
 		{		
 	    	this.ventanaPrincipal.setPanel(pnlAgregar);
@@ -73,10 +74,7 @@ import presentacion.vista.PanelAgregar;
 	    	
 	    	refrescarTabla();
 	    }
-	    
-
-	    
-	    
+	       
 	    
 	   private void PanelAgregarPersonas(ActionEvent a) {
 			
@@ -87,34 +85,55 @@ import presentacion.vista.PanelAgregar;
 			 if (!esNombreValido(nombre) || !esNombreValido(apellido)) {
 		            JOptionPane.showMessageDialog(null, "Nombre y apellido no deben contener números ni estar vacíos");
 		            return;
-		        }
-
-		        if (!esDniValido(dni)) {
+		     }
+			 
+		     if (!esDniValido(dni)) {
 		            JOptionPane.showMessageDialog(null, "DNI debe contener solo números y no debe estar vacío");
 		            return;
-		        }
-			
+		     }
 		        
-		        Persona nuevaPersona = new Persona(dni,nombre,apellido);
-			    boolean estado = pNeg.insert(nuevaPersona);
+		     Persona nuevaPersona = new Persona(dni,nombre,apellido);
+			 boolean estado = pNeg.insert(nuevaPersona);
 			
-			String mensaje;
-			if(estado==true)
-			{
+			 String mensaje;
+			 if(estado==true)
+			 {
 				mensaje="Persona agregada con exito";
 				System.out.println("Se agregó a la base de datos");
 				this.pnlAgregar.getTxtNombre().setText("");	
 				this.pnlAgregar.getTxtApellido().setText("");
 				this.pnlAgregar.getTxtDni().setText("");
-			}
-			else {
+			 }
+			 else {
 				mensaje="Persona no agregada, complete todos los campos";
 			    System.out.println("No se agregó a la base de datos");
-	    }
-			JOptionPane pnConfirmacion = null;
-			pnConfirmacion.showMessageDialog(null,"Persona agregada exitosamente!");
-	
-	}    
+	         }
+			 JOptionPane pnConfirmacion = null;
+			 pnConfirmacion.showMessageDialog(null,"Persona agregada exitosamente!");
+	   }  
+	   
+	   
+	   private void PanelEliminar(ActionEvent a) {
+		    Persona personaSeleccionada = (Persona) this.pnlEliminar.getListPersonas().getSelectedValue();
+		    if (personaSeleccionada != null) {
+		        int confirmacion = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea eliminar a esta persona?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
+		        if (confirmacion == JOptionPane.YES_OPTION) {
+		            boolean estado = pNeg.delete(personaSeleccionada);
+		            String mensaje;
+		            if (estado) {
+		                mensaje = "Persona eliminada con éxito";
+		                actualizarListaPersonasEliminar();
+		            } else {
+		                mensaje = "Error al eliminar la persona";
+		            }
+		            JOptionPane.showMessageDialog(null, mensaje);
+		        }
+		    } else {
+		        JOptionPane.showMessageDialog(null, "Seleccione una persona para eliminar");
+		    }
+	   }
+	   
+	   
 
        private boolean esNombreValido(String texto) {
          return texto.matches("[a-zA-Z]+");
@@ -136,8 +155,7 @@ import presentacion.vista.PanelAgregar;
 			this.personasEnTabla = (ArrayList<Persona>) pNeg.readALL();
 			this.pnListar.llenarTabla(this.personasEnTabla);
 		}
-		
-		
+			
 		
 	    private void ventanaModificarPersona(ActionEvent a) {
 	    	
@@ -183,20 +201,21 @@ import presentacion.vista.PanelAgregar;
 	            listModelModificar.addElement(persona);
 	        }
 	    }
-
-	    
-	    
-	    
+	    private void actualizarListaPersonasEliminar() {
+	        personasEnLista = (ArrayList<Persona>) pNeg.readALL();
+	        DefaultListModel<Persona> listModelEliminar = pnlEliminar.getListModel();
+	        listModelEliminar.clear();
+	        for (Persona persona : personasEnLista) {
+	        	listModelEliminar.addElement(persona);
+	        }
+	    }
+	        	    
 	    
 		@Override
 	   public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub		
-		}
-		
-		
-		
-		
-		
-
+		}						
 	
+		
+		
 }
