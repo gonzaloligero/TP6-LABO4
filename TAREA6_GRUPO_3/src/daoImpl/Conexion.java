@@ -19,7 +19,7 @@ public class Conexion {
 		try
 		{
 			Class.forName("com.mysql.jdbc.Driver"); 
-			this.connection = DriverManager.getConnection(host+dbName,user,pass);
+			this.connection = DriverManager.getConnection(host + dbName, user, pass);
 			this.connection.setAutoCommit(false);
 		}
 		catch(Exception e)
@@ -37,7 +37,6 @@ public class Conexion {
 		return instancia;
 	}
 
-	//no se usa creo
 	public Connection getSQLConexion() 
 	{
 		return this.connection;
