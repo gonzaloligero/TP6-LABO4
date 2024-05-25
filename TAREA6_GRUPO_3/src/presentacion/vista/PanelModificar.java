@@ -3,6 +3,7 @@ package presentacion.vista;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -43,6 +44,8 @@ public class PanelModificar extends JPanel {
                             txtNombre.setText(personaSeleccionada.getNombre());
                             txtApellido.setText(personaSeleccionada.getApellido());
                             txtDni.setText(personaSeleccionada.getDni());
+                            txtDni.setEnabled(false); //para desabiltar el campo luego de mostrar el dni
+                            
                         }
                     }
                 });
@@ -92,4 +95,9 @@ public class PanelModificar extends JPanel {
     public JButton getBtnModificar() {
         return btnModificar;
     }
+
+    
+
+    
+    
 }

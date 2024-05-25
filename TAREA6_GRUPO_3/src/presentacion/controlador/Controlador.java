@@ -166,30 +166,35 @@ import presentacion.vista.PanelAgregar;
 	            String apellido = this.pnlModificar.getTxtApellido().getText();
 	            String dni = this.pnlModificar.getTxtDni().getText();
 	            
-	           
-	            Persona personaModificada = new Persona(nombre, apellido, dni);
-	            
-	         
-	            boolean estado = pNeg.update(personaModificada);
-	            String mensaje;
-	            if (estado) {
-	                mensaje = "Persona modificada con éxito";
-	                
-	                this.pnlModificar.getTxtNombre().setText("");
-	                this.pnlModificar.getTxtApellido().setText("");
-	                this.pnlModificar.getTxtDni().setText("");
-	            } else {
-	                mensaje = "Persona no modificada, No se puede modificar el DNI";
-	            }
-      
-	          
-	            JOptionPane.showMessageDialog(null, mensaje);
-	            actualizarListaPersonasModificar();
-     
-	        } else {
-	          
-	            
-	        }
+				 if (!esNombreValido(nombre) || !esNombreValido(apellido)) {
+			            JOptionPane.showMessageDialog(null, "Nombre y apellido no deben contener números ni estar vacíos");
+			            return;
+			     }
+				 else {
+					 
+					 
+					 Persona personaModificada = new Persona(nombre, apellido, dni);
+					 
+					 
+					 boolean estado = pNeg.update(personaModificada);
+					 String mensaje;
+					 if (estado) {
+						 mensaje = "Persona modificada con éxito";
+						 
+						 this.pnlModificar.getTxtNombre().setText("");
+						 this.pnlModificar.getTxtApellido().setText("");
+						 this.pnlModificar.getTxtDni().setText("");
+					 } else {
+						 mensaje = "Persona no modificada, No se puede modificar el DNI";
+					 }
+					 
+					 
+					 JOptionPane.showMessageDialog(null, mensaje);
+					 actualizarListaPersonasModificar();
+					 
+				 }
+					 	 
+			}
 	    }
 	    
   
